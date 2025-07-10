@@ -14,6 +14,19 @@ static const char
 	readySymbol[2][] = {"☐", "☑"},
 	teamReadySymbol[2][] = {" [X]", " [√]"};
 
+new iSurvivorScore = GetTeamScore(2);
+new iInfectedScore = GetTeamScore(3);
+new iDiff = iSurvivorScore - iInfectedScore;
+
+decl String:diffStr[16];
+
+if (iDiff > 0)
+    Format(diffStr, sizeof(diffStr), "+%d", iDiff);
+else if (iDiff < 0)
+    Format(diffStr, sizeof(diffStr), "%d", iDiff);
+else
+    Format(diffStr, sizeof(diffStr), "0");
+
 void InitPanel()
 {
 	if (cmdFooter == null)
@@ -85,7 +98,8 @@ void UpdatePanel()
 	g_cvServerNamer.GetString(ServerName, sizeof(ServerName));
 	
 	l4d_ready_cfg_name.GetString(cfgName, sizeof(cfgName));
-	Format(ServerBuffer, sizeof(ServerBuffer), "▸ Server: %s \n▸ Slots: %d/%d\n▸ Config: %s", ServerName, GetSeriousClientCount(), FindConVar("sv_maxplayers").IntValue, cfgName);
+	Format(ServerBuffer, sizeof(ServerBuffer),
+	 "▸ Consmod \n▸ Slots: %d/%d\n▸ Config: %s \n▸ Diff: %s", ServerName, GetSeriousClientCount(), FindConVar("sv_maxplayers").IntValue, cfgName, diffStr);
 	menuPanel.DrawText(ServerBuffer);
 	
 	FormatTime(ServerBuffer, sizeof(ServerBuffer), "%m/%d/%Y - %I:%M%p");

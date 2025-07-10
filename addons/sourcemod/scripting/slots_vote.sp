@@ -25,7 +25,7 @@ public void OnPluginStart()
 {
 	LoadTranslations("slots_vote.phrases");
 	RegConsoleCmd("sm_slots", SlotsRequest);
-	hMaxSlots = CreateConVar("slots_max_slots", "30", "Maximum amount of slots you wish players to be able to vote for? (DON'T GO HIGHER THAN 30)");
+	hMaxSlots = CreateConVar("slots_max_slots", "12", "Maximum amount of slots you wish players to be able to vote for? (DON'T GO HIGHER THAN 30)");
 	MaxSlots  = hMaxSlots.IntValue;
 	HookConVarChange(hMaxSlots, CVarChanged);
 }

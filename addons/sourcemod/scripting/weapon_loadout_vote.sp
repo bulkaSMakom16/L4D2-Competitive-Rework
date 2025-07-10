@@ -122,7 +122,7 @@ void Event_PlayerTeam(Event hEvent, char[] sEventName , bool bDontBroadcast)
 	}
 
 	int iUserId = hEvent.GetInt("userid");
-	CreateTimer(0.2, Timer_ChangeTeamDelay, iUserId, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0, Timer_ChangeTeamDelay, iUserId, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 Action Timer_ChangeTeamDelay(Handle hTimer, any iUserId)
@@ -146,7 +146,7 @@ void Event_RoundStart(Event hEvent, char[] sEventName, bool bDontBroadcast)
 	}
 
 	// Workaround for not receiving guns on second half.
-	CreateTimer(2.0, Timer_GiveWeapons, _, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.0, Timer_GiveWeapons, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 Action Cmd_VoteMode(int iClient, int iArgs)
@@ -165,11 +165,6 @@ Action Cmd_VoteMode(int iClient, int iArgs)
 	// This player understands what to do.
 	g_bVoteUnderstood[iClient] = true;
 
-	// Is a new vote allowed?
-	if (!IsNewBuiltinVoteAllowed()) {
-		CPrintToChat(iClient, "A vote cannot be called at this moment, try again in a second or five.");
-		return Plugin_Handled;
-	}
 
 	// Check if all players are present, if not.. tell them about it.
 	if (ReadyPlayers() != GetMaxPlayers()) {
@@ -191,12 +186,6 @@ Action Cmd_ForceVoteMode(int iClient, int iArgs)
 	// This player understands what to do.
 	g_bVoteUnderstood[iClient] = true;
 
-	// Is a new vote allowed?
-	if (!IsNewBuiltinVoteAllowed()) {
-		CPrintToChat(iClient, "A vote cannot be called at this moment, try again in a second or five.");
-		return Plugin_Handled;
-	}
-
 	// Show the Menu.
 	ShowMenu(iClient);
 	return Plugin_Handled;
@@ -215,11 +204,6 @@ int Menu_VoteMenuHandler(Menu hMenu, MenuAction iAction, int iClient, int iIndex
 {
 	switch (iAction) {
 		case MenuAction_Select: {
-			// Is a new vote allowed?
-			if (!IsNewBuiltinVoteAllowed()) {
-				CPrintToChat(iClient, "A vote cannot be called at this moment, try again in a second or five.");
-				return 0;
-			}
 
 			char sInfo[32], sVoteTitle[64];
 			if (hMenu.GetItem(iIndex, sInfo, sizeof(sInfo))) {
@@ -419,7 +403,7 @@ Action Timer_InformPlayers(Handle hTimer)
 	static int iNumPrinted = 0;
 
 	// Don't annoy the players, remind them a maximum of 6 times.
-	if (iNumPrinted >= 6 || g_iCurrentMode != eUndecided) {
+	if (iNumPrinted >= 99999 || g_iCurrentMode != eUndecided) {
 		iNumPrinted = 0;
 		return Plugin_Stop;
 	}
